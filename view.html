@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>For You My Love 💗</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Hearts background -->
+    <div id="heart-background" class="heart-background"></div>
+
+    <!-- Intro animation -->
+    <div id="intro" class="intro-screen">
+      <div class="intro-content">
+        <h1>For You My Love 💗</h1>
+      </div>
+    </div>
+
+    <!-- App -->
+    <div id="app">
+      <main class="pages">
+        <!-- Love -->
+        <section id="letter" class="page active" aria-hidden="false">
+          <div class="card">
+            <h2 class="title">💌 My Love Letters</h2>
+
+            <div id="letters-list" class="letter-list">
+              <!-- Letters will be rendered here -->
+            </div>
+
+            <div
+              class="letter-content"
+              id="letterContent"
+              style="display: none"
+            >
+              <div class="editable" id="letterText"></div>
+              <div class="signature">With all my love,<br />Your Name</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const FIREBASE_URL =
+        "https://love-58a84-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+      async function loadData(path) {
+        const res = await fetch(`${FIREBASE_URL}/${path}.json`);
+        return res.json();
+      }
+
+      const lettersList = document.getElementById("letters-list");
+      const letterContent = document.getElementById("letterContent");
+      const letterText = document.getElementById("letterText");
+      let lettersData = [];
+      let currentOpenLetterIndex = -1;
+
+      async function loadLetters() {
+        try {
+          const online = await loadData("letters");
+          if (online && Array.isArray(online)) lettersData = online;
+          renderLetters();
+        } catch {
+          lettersList.innerHTML = "<p>Failed to load letters 💔</p>";
+        }
+      }
+
+      function renderLetters() {
+        lettersList.innerHTML = "";
+        lettersData.forEach((letter, i) => {
+          const div = document.createElement("div");
+          div.className = "letter-card";
+          div.innerHTML = `
+            <div class="letter-left">
+              <div class="icon">💌</div>
+              <div class="meta">
+                <div class="letter-title">${
+                  letter.title || "My Love Letter"
+                }</div>
+                <div class="letter-date">${letter.date || "Today"}</div>
+              </div>
+            </div>
+            <div class="letter-actions">
+              <button class="open-btn" data-index="${i}">Click to open</button>
+            </div>
+          `;
+          lettersList.appendChild(div);
+        });
+
+        lettersList.querySelectorAll(".open-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const i = e.target.dataset.index;
+            if (currentOpenLetterIndex === parseInt(i)) {
+              closeLetter(i);
+            } else {
+              openLetter(i);
+            }
+          });
+        });
+      }
+
+      function openLetter(index) {
+        const letter = lettersData[index];
+        letterText.innerHTML =
+          letter.content ||
+          "Dear [Name],<br><br>I wanted to take a moment to express how much you mean to me...";
+        letterContent.style.display = "block";
+        letterContent.classList.add("show");
+        currentOpenLetterIndex = parseInt(index);
+      }
+
+      function closeLetter(index) {
+        letterContent.classList.remove("show");
+        setTimeout(() => (letterContent.style.display = "none"), 360);
+        currentOpenLetterIndex = -1;
+      }
+
+      // Hearts background animation
+      const heartContainer = document.getElementById("heart-background");
+      function spawnHeart() {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = ["💖", "💕", "❤️"][Math.floor(Math.random() * 3)];
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = 12 + Math.random() * 18 + "px";
+        h.style.animationDuration = 4 + Math.random() * 6 + "s";
+        heartContainer.appendChild(h);
+        setTimeout(() => h.remove(), 11000);
+      }
+      setInterval(spawnHeart, 360);
+
+      // Load letters on page load
+      document.addEventListener("DOMContentLoaded", loadLetters);
+    </script>
+  </body>
+</html>

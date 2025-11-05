@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>For You My Love 💗</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Hearts background -->
+    <div id="heart-background" class="heart-background"></div>
+
+    <!-- Intro animation -->
+    <div id="intro" class="intro-screen">
+      <div class="intro-content">
+        <h1>For You My Love 💗</h1>
+      </div>
+    </div>
+
+    <!-- Password modal -->
+    <div
+      id="password-screen"
+      class="screen active"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="password-card">
+        <h1>Enter the Secret Code 💞</h1>
+        <input
+          id="password-input"
+          type="password"
+          placeholder="Enter code..."
+          aria-label="secret code"
+        />
+        <div class="pw-actions">
+          <button id="password-btn" class="btn">Unlock</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- App -->
+    <div id="app" class="hidden">
+      <nav class="nav" aria-label="Main navigation">
+        <button class="pill active" data-target="letter">💌 Love</button>
+        <button class="pill" data-target="music">🎵 Music</button>
+        <button class="pill" data-target="notes">📝 Notes</button>
+        <button class="pill" data-target="gallery">🌸 Gallery</button>
+      </nav>
+
+      <main class="pages">
+        <!-- Love -->
+        <section id="letter" class="page" aria-hidden="false">
+          <div class="card">
+            <h2 class="title">💌 My Love Letters</h2>
+
+            <div id="letters-list" class="letter-list">
+              <!-- Letters will be rendered here by JavaScript -->
+            </div>
+
+            <div
+              class="letter-content"
+              id="letterContent"
+              style="display: none"
+            >
+              <div class="editable" contenteditable="true" id="letterText">
+                Dear [Name],<br /><br />
+                I wanted to take a moment to express how much you mean to me...
+              </div>
+              <div class="signature">With all my love,<br />Your Name</div>
+            </div>
+
+            <div class="note-actions">
+              <button id="add-letter" class="btn">➕ Add Letter</button>
+              <button id="save-letters" class="btn ghost">💾 Save</button>
+              <button id="refresh-letters" class="btn ghost">🔄 Refresh</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Music -->
+        <section id="music" class="page" aria-hidden="true">
+          <div class="music-hero">
+            <div class="music-card card">
+              <h2>🎵 Songs that remind me of you</h2>
+
+              <div id="music-list" class="music-list">
+                <!-- Songs will be rendered here by JavaScript -->
+              </div>
+
+              <div class="music-edit">
+                <input
+                  id="music-url"
+                  placeholder="Paste mp3 URL to set as default (optional)"
+                />
+                <button id="save-music" class="btn">Save</button>
+              </div>
+
+              <div class="note-actions">
+                <button id="add-song" class="btn">➕ Add Song</button>
+                <button id="save-music-online" class="btn ghost">
+                  💾 Save All
+                </button>
+                <button id="refresh-music" class="btn ghost">🔄 Refresh</button>
+              </div>
+
+              <audio id="player" preload="metadata"></audio>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notes page -->
+        <section id="notes" class="page" aria-hidden="true">
+          <div class="card">
+            <h2 class="title">💌 Notes</h2>
+
+            <div id="notes-container" class="notes-container">
+              <!-- Notes will appear here -->
+            </div>
+
+            <div class="note-actions">
+              <button id="add-note" class="btn">➕ Add Note</button>
+              <button id="save-notes-online" class="btn ghost">
+                💾 Save All
+              </button>
+              <button id="refresh-notes" class="btn ghost">🔄 Refresh</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gallery -->
+        <section id="gallery" class="page" aria-hidden="true">
+          <div class="card">
+            <h2 class="title">🌸 Our Memory</h2>
+            <div id="gallery-grid" class="gallery-grid">
+              <!-- Images will be rendered here by JavaScript -->
+            </div>
+            <p
+              contenteditable="true"
+              class="caption editable"
+              style="margin-top: 12px"
+            >
+              Add your memories here 💕
+            </p>
+            <div class="note-actions">
+              <button id="add-image" class="btn">➕ Add Image</button>
+              <button id="save-gallery-online" class="btn ghost">
+                💾 Save All
+              </button>
+              <button id="refresh-gallery" class="btn ghost">🔄 Refresh</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>

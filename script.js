@@ -28,7 +28,7 @@ window.addEventListener("load", () => {
 });
 
 /* ================== PASSWORD ================== */
-const SECRET = "120209";
+const SECRET = "123";
 const pwScreen = document.getElementById("password-screen");
 const pwInput = document.getElementById("password-input");
 const pwBtn = document.getElementById("password-btn");
@@ -112,7 +112,6 @@ async function loadLetters() {
 function renderLetters() {
   if (!lettersList) return;
   lettersList.innerHTML = "";
-  lettersData.forEach((letter, i) => {
     const isOpen = currentOpenLetterIndex === i;
     const btnText = isOpen ? "Click to close" : "Click to open";
     const div = document.createElement("div");
@@ -131,7 +130,7 @@ function renderLetters() {
   <button class="delete-letter" data-index="${i}">✖</button>
 `;
     lettersList.appendChild(div);
-  });
+  };
 
   lettersList.querySelectorAll(".open-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -153,7 +152,6 @@ function renderLetters() {
       await saveData("letters", lettersData);
     });
   });
-}
 
 function openLetter(index) {
   // Close any currently open letter
@@ -322,16 +320,6 @@ async function loadMusic() {
   renderMusic();
 }
 
-playBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const src = btn.dataset.src;
-    if (!src) return;
-    if (player.src !== src) player.src = src;
-    player.play().catch(() => {});
-  });
-});
-pauseBtns.forEach((btn) => btn.addEventListener("click", () => player.pause()));
-
 function renderMusic() {
   const musicList = document.getElementById("music-list");
   if (!musicList) return;
@@ -354,6 +342,19 @@ function renderMusic() {
       </div>
     `;
     musicList.appendChild(div);
+  });
+
+  musicList.querySelectorAll(".play").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const src = btn.dataset.src;
+      if (!src) return;
+      if (player.src !== src) player.src = src;
+      player.play().catch(() => {});
+    });
+  });
+
+  musicList.querySelectorAll(".pause").forEach((btn) => {
+    btn.addEventListener("click", () => player.pause());
   });
 
   musicList.querySelectorAll(".delete-song").forEach((btn) => {
@@ -395,6 +396,7 @@ const addImageBtn = document.getElementById("add-image");
 const saveGalleryOnline = document.getElementById("save-gallery-online");
 const refreshGallery = document.getElementById("refresh-gallery");
 let galleryData = [];
+let galleryCaptionText = "Add your memories here 💕";
 
 async function loadGallery() {
   try {
@@ -406,16 +408,31 @@ async function loadGallery() {
   } catch {
     galleryData = JSON.parse(localStorage.getItem("foryou_gallery") || "[]");
   }
+  try {
+    const captionOnline = await loadData("gallery_caption");
+    if (captionOnline) galleryCaptionText = captionOnline;
+    else
+      galleryCaptionText =
+        localStorage.getItem("foryou_gallery_caption") ||
+        "Add your memories here 💕";
+    localStorage.setItem("foryou_gallery_caption", galleryCaptionText);
+  } catch {
+    galleryCaptionText =
+      localStorage.getItem("foryou_gallery_caption") ||
+      "Add your memories here 💕";
+  }
   renderGallery();
 }
 
 function renderGallery() {
   if (!galleryGrid) return;
   galleryGrid.innerHTML = "";
-  galleryData.forEach((url, i) => {
+  galleryData.forEach((item, i) => {
     const div = document.createElement("div");
     div.className = "frame";
-    div.innerHTML = `<img src="${url}" /><button class="delete-image" data-index="${i}">✖</button>`;
+    div.innerHTML = `<img src="${item.url || item}" alt="${
+      item.caption || ""
+    }" /><button class="delete-image" data-index="${i}">✖</button>`;
     galleryGrid.appendChild(div);
   });
   galleryGrid.querySelectorAll("img").forEach((img) => {
@@ -430,13 +447,24 @@ function renderGallery() {
       await saveData("gallery", galleryData);
     });
   });
+
+  // Update the caption element
+  const captionEl = document.querySelector(".caption.editable");
+  if (captionEl) {
+    captionEl.innerHTML = galleryCaptionText;
+    captionEl.addEventListener("input", () => {
+      galleryCaptionText = captionEl.innerHTML;
+      localStorage.setItem("foryou_gallery_caption", galleryCaptionText);
+    });
+  }
 }
 
 if (addImageBtn)
   addImageBtn.addEventListener("click", async () => {
     const url = prompt("Image URL:") || "";
     if (!url) return;
-    galleryData.push(url);
+    const caption = prompt("Caption (optional):") || "";
+    galleryData.push({ url, caption });
     localStorage.setItem("foryou_gallery", JSON.stringify(galleryData));
     renderGallery();
     await saveData("gallery", galleryData);
@@ -445,6 +473,7 @@ if (addImageBtn)
 if (saveGalleryOnline)
   saveGalleryOnline.addEventListener("click", async () => {
     await saveData("gallery", galleryData);
+    await saveData("gallery_caption", galleryCaptionText);
     alert("Gallery saved online 🌸");
   });
 
@@ -458,5 +487,4 @@ setInterval(() => {
   loadNotes();
   loadMusic();
   loadGallery();
-}, 5000); // refresh tiap 5 detik
-
+}, 30000); // refresh tiap 30 detik

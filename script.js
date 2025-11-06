@@ -28,7 +28,7 @@ window.addEventListener("load", () => {
 });
 
 /* ================== PASSWORD ================== */
-const SECRET = "123";
+const SECRET = "120209";
 const pwScreen = document.getElementById("password-screen");
 const pwInput = document.getElementById("password-input");
 const pwBtn = document.getElementById("password-btn");
@@ -488,3 +488,4 @@ setInterval(() => {
   loadMusic();
   loadGallery();
 }, 30000); // refresh tiap 30 detik
+
